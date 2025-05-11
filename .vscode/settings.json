@@ -1,0 +1,13 @@
+{
+    "C_Cpp.intelliSenseEngine": "default",
+    "idf.espIdfPath": "/Users/duncanboyd/esp/esp-idf",
+    "idf.pythonInstallPath": "/Users/duncanboyd/anaconda3/bin/python",
+    "idf.openOcdConfigs": [
+        "board/esp32c6-builtin.cfg"
+    ],
+    "idf.port": "/dev/tty.usbmodem14301",
+    "idf.toolsPath": "/Users/duncanboyd/.espressif",
+    "idf.customExtraVars": {
+        "IDF_TARGET": "esp32c6"
+    }
+}
