@@ -1,2 +1,2 @@
 idf_component_register(SRCS "src/main.c"
-                    INCLUDE_DIRS "." "src")
+                    INCLUDE_DIRS "." "src" "includes")
