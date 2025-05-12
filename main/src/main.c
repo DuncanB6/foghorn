@@ -7,6 +7,15 @@ void app_main(void)
     printf("Beginning application...\n");
 
     init_i2c(&i2c_dev);
+    init_gpio();
+
+    while (1) {
+        gpio_set_level(SI4713_RESET_PIN, 1);  // Set pin high
+        vTaskDelay(pdMS_TO_TICKS(2000));
+
+        gpio_set_level(SI4713_RESET_PIN, 0);  // Set pin low
+        vTaskDelay(pdMS_TO_TICKS(2000));
+    }
 
     printf("Exiting application...\n");
 
@@ -34,6 +43,29 @@ void init_i2c(i2c_master_dev_handle_t* i2c_dev) {
         .scl_speed_hz = DEFAULT_SCL_SPEED_IN_HZ,
     };
     ESP_ERROR_CHECK(i2c_master_bus_add_device(bus_handle, &dev_cfg, i2c_dev));
+
+    printf("I2C initialized\n");
+
+    return;
+}
+
+void init_gpio() {
+
+    printf("Initializing GPIO...\n");
+
+    uint64_t pin_bitMask = 0;
+    pin_bitMask |= (1ULL << SI4713_RESET_PIN);
+
+    gpio_config_t io_conf = {
+        .pin_bit_mask = pin_bitMask, 
+        .mode = GPIO_MODE_OUTPUT,              
+        .pull_up_en = GPIO_PULLUP_DISABLE,     
+        .pull_down_en = GPIO_PULLDOWN_DISABLE, 
+        .intr_type = GPIO_INTR_DISABLE         
+    };
+    gpio_config(&io_conf);
+
+    printf("GPIO initialized\n");
 
     return;
 }

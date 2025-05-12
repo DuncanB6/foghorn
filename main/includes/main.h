@@ -4,10 +4,14 @@
 #include <stdio.h>
 
 #include "driver/i2c_master.h"
+#include "driver/gpio.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 
 static i2c_master_dev_handle_t i2c_dev;
 
 void init_i2c(i2c_master_dev_handle_t* i2c_dev);
+void init_gpio(void);
 
 // I2C specific
 #define DEFAULT_I2C_SDA_PIN       GPIO_NUM_1
@@ -20,5 +24,7 @@ void init_i2c(i2c_master_dev_handle_t* i2c_dev);
 
 // FM transmitter specific
 #define SI4713_I2C_ADDR           (0x63)
+#define SI4713_RESET_PIN          GPIO_NUM_5
+
 
 #endif
