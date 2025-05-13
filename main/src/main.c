@@ -2,8 +2,8 @@
 #include "main.h"
 
 
-void app_main(void)
-{
+void app_main(void) {
+
     printf("Beginning application...\n");
 
     init_i2c(&i2c_dev);
@@ -35,9 +35,11 @@ esp_err_t send_i2c_command(i2c_master_dev_handle_t* i2c_dev, uint8_t* command, s
         return ret;
     }
 
+    vTaskDelay(pdMS_TO_TICKS(100)); 
+
     if (DEBUG) {
         for (size_t j = 0; j < response_len; j++) {
-            ESP_LOGI("I2C", "0x%02X", response[j]);
+            printf("0x%02X\n", response[j]);
         }
     }
     
@@ -45,28 +47,47 @@ esp_err_t send_i2c_command(i2c_master_dev_handle_t* i2c_dev, uint8_t* command, s
 }
 
 
-void test_fm(i2c_master_dev_handle_t* i2c_dev) {
+int test_fm(i2c_master_dev_handle_t* i2c_dev) {
+
     // Reset the FM board
     gpio_set_level(SI4713_RESET_PIN, 0);
     vTaskDelay(pdMS_TO_TICKS(100));
     gpio_set_level(SI4713_RESET_PIN, 1);
     vTaskDelay(pdMS_TO_TICKS(100));
 
-    // First command
-    uint8_t command1[3] = {0x01, 0x12, 0x50};
-    uint8_t reply1[1];
-    if (send_i2c_command(i2c_dev, command1, sizeof(command1), reply1, sizeof(reply1)) != ESP_OK) {
-        return;
+    if (!power_up(i2c_dev)) {
+        return false;
     }
 
-    vTaskDelay(pdMS_TO_TICKS(100));
-
-    // Second command
-    uint8_t command2[1] = {0x10}; // Get revision
-    uint8_t reply2[9];
-    if (send_i2c_command(i2c_dev, command2, sizeof(command2), reply2, sizeof(reply2)) != ESP_OK) {
-        return;
+    if (!get_rev(i2c_dev)) {
+        return false;
     }
+
+    return true;
+}
+
+
+int power_up(i2c_master_dev_handle_t* i2c_dev) {
+
+    uint8_t command[3] = {0x01, 0x12, 0x50};
+    uint8_t reply[1];
+    if (send_i2c_command(i2c_dev, command, sizeof(command), reply, sizeof(reply)) != ESP_OK) {
+        return false;
+    }
+
+    return true;
+}
+
+
+int get_rev(i2c_master_dev_handle_t* i2c_dev) {
+
+    uint8_t command[1] = {0x10};
+    uint8_t reply[9];
+    if (send_i2c_command(i2c_dev, command, sizeof(command), reply, sizeof(reply)) != ESP_OK) {
+        return false;
+    }
+
+    return true;
 }
 
 
@@ -98,7 +119,7 @@ void init_i2c(i2c_master_dev_handle_t* i2c_dev) {
 }
 
 
-void init_gpio() {
+void init_gpio(void) {
 
     printf("Initializing GPIO...\n");
 
