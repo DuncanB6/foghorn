@@ -7,11 +7,14 @@
 #include "driver/gpio.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "esp_log.h"
 
 static i2c_master_dev_handle_t i2c_dev;
 
 void init_i2c(i2c_master_dev_handle_t* i2c_dev);
 void init_gpio(void);
+void test_fm(i2c_master_dev_handle_t* i2c_dev);
+esp_err_t send_i2c_command(i2c_master_dev_handle_t* i2c_dev, uint8_t* command, size_t command_len, uint8_t* response, size_t response_len);
 
 // I2C specific
 #define DEFAULT_I2C_SDA_PIN       GPIO_NUM_1
@@ -25,6 +28,7 @@ void init_gpio(void);
 // FM transmitter specific
 #define SI4713_I2C_ADDR           (0x63)
 #define SI4713_RESET_PIN          GPIO_NUM_5
+#define I2C_ADDR                  0x63
 
 
 #endif

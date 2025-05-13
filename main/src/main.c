@@ -9,18 +9,71 @@ void app_main(void)
     init_i2c(&i2c_dev);
     init_gpio();
 
-    while (1) {
-        gpio_set_level(SI4713_RESET_PIN, 1);  // Set pin high
-        vTaskDelay(pdMS_TO_TICKS(2000));
-
-        gpio_set_level(SI4713_RESET_PIN, 0);  // Set pin low
-        vTaskDelay(pdMS_TO_TICKS(2000));
-    }
+    test_fm(&i2c_dev);
 
     printf("Exiting application...\n");
 
     return;
 }
+
+
+esp_err_t send_i2c_command(i2c_master_dev_handle_t* i2c_dev, uint8_t* command, size_t command_len, uint8_t* response, size_t response_len) {
+    esp_err_t ret;
+
+    ESP_LOGI("I2C", "Sending:");
+    for (size_t i = 0; i < command_len; i++) {
+        ESP_LOGI("I2C", "0x%02X", command[i]);
+    }
+
+    ret = i2c_master_transmit(*i2c_dev, command, command_len, 1000 / portTICK_PERIOD_MS);
+    if (ret != ESP_OK) {
+        ESP_LOGE("I2C", "Transmit failed: %s", esp_err_to_name(ret));
+        return ret;
+    }
+
+    vTaskDelay(pdMS_TO_TICKS(10));
+
+    if (response != NULL && response_len > 0) {
+        ret = i2c_master_receive(*i2c_dev, response, response_len, 1000 / portTICK_PERIOD_MS);
+        if (ret != ESP_OK) {
+            ESP_LOGE("I2C", "Receive failed: %s", esp_err_to_name(ret));
+            return ret;
+        }
+
+        ESP_LOGI("I2C", "Received:");
+        for (size_t j = 0; j < response_len; j++) {
+            ESP_LOGI("I2C", "0x%02X", response[j]);
+        }
+    }
+
+    return ESP_OK;
+}
+
+
+void test_fm(i2c_master_dev_handle_t* i2c_dev) {
+    // Reset the FM board
+    gpio_set_level(SI4713_RESET_PIN, 0);
+    vTaskDelay(pdMS_TO_TICKS(100));
+    gpio_set_level(SI4713_RESET_PIN, 1);
+    vTaskDelay(pdMS_TO_TICKS(100));
+
+    // First command
+    uint8_t command1[3] = {0x01, 0x12, 0x50};
+    uint8_t reply1[1];
+    if (send_i2c_command(i2c_dev, command1, sizeof(command1), reply1, sizeof(reply1)) != ESP_OK) {
+        return;
+    }
+
+    vTaskDelay(pdMS_TO_TICKS(100));
+
+    // Second command
+    uint8_t command2[1] = {0x10}; // Get revision
+    uint8_t reply2[9];
+    if (send_i2c_command(i2c_dev, command2, sizeof(command2), reply2, sizeof(reply2)) != ESP_OK) {
+        return;
+    }
+}
+
 
 void init_i2c(i2c_master_dev_handle_t* i2c_dev) {
 
@@ -48,6 +101,7 @@ void init_i2c(i2c_master_dev_handle_t* i2c_dev) {
 
     return;
 }
+
 
 void init_gpio() {
 
