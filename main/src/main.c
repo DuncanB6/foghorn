@@ -18,14 +18,10 @@ void app_main(void)
 
 
 esp_err_t send_i2c_command(i2c_master_dev_handle_t* i2c_dev, uint8_t* command, size_t command_len, uint8_t* response, size_t response_len) {
+    
     esp_err_t ret;
 
-    ESP_LOGI("I2C", "Sending:");
-    for (size_t i = 0; i < command_len; i++) {
-        ESP_LOGI("I2C", "0x%02X", command[i]);
-    }
-
-    ret = i2c_master_transmit(*i2c_dev, command, command_len, 1000 / portTICK_PERIOD_MS);
+    ret = i2c_master_transmit(*i2c_dev, command, command_len, 1000/portTICK_PERIOD_MS); // 1s timeout
     if (ret != ESP_OK) {
         ESP_LOGE("I2C", "Transmit failed: %s", esp_err_to_name(ret));
         return ret;
@@ -33,20 +29,19 @@ esp_err_t send_i2c_command(i2c_master_dev_handle_t* i2c_dev, uint8_t* command, s
 
     vTaskDelay(pdMS_TO_TICKS(10));
 
-    if (response != NULL && response_len > 0) {
-        ret = i2c_master_receive(*i2c_dev, response, response_len, 1000 / portTICK_PERIOD_MS);
-        if (ret != ESP_OK) {
-            ESP_LOGE("I2C", "Receive failed: %s", esp_err_to_name(ret));
-            return ret;
-        }
+    ret = i2c_master_receive(*i2c_dev, response, response_len, 1000/portTICK_PERIOD_MS); // 1s timeout
+    if (ret != ESP_OK) {
+        ESP_LOGE("I2C", "Receive failed: %s", esp_err_to_name(ret));
+        return ret;
+    }
 
-        ESP_LOGI("I2C", "Received:");
+    if (DEBUG) {
         for (size_t j = 0; j < response_len; j++) {
             ESP_LOGI("I2C", "0x%02X", response[j]);
         }
     }
-
-    return ESP_OK;
+    
+    return ret;
 }
 
 

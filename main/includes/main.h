@@ -16,6 +16,8 @@ void init_gpio(void);
 void test_fm(i2c_master_dev_handle_t* i2c_dev);
 esp_err_t send_i2c_command(i2c_master_dev_handle_t* i2c_dev, uint8_t* command, size_t command_len, uint8_t* response, size_t response_len);
 
+#define DEBUG                     false
+
 // I2C specific
 #define DEFAULT_I2C_SDA_PIN       GPIO_NUM_1
 #define DEFAULT_I2C_SCL_PIN       GPIO_NUM_0
