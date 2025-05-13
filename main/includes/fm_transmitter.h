@@ -3,7 +3,7 @@
 
 #include "main.h"
 
-int test_fm(i2c_master_dev_handle_t* i2c_dev);
+int init_fm(i2c_master_dev_handle_t* i2c_dev);
 int tune_fm_freq(i2c_master_dev_handle_t* i2c_dev, uint16_t freq_kHz);
 int set_tx_power(i2c_master_dev_handle_t* i2c_dev, uint8_t power, uint8_t antcap);
 int set_property(i2c_master_dev_handle_t* i2c_dev, uint16_t property, uint16_t value);

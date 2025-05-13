@@ -1,7 +1,7 @@
 
 #include "fm_transmitter.h"
 
-int test_fm(i2c_master_dev_handle_t* i2c_dev) {
+int init_fm(i2c_master_dev_handle_t* i2c_dev) {
 
     // Reset the FM board
     gpio_set_level(SI4713_RESET_PIN, 0);

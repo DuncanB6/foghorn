@@ -10,7 +10,7 @@ void app_main(void) {
     init_i2c(&i2c_dev);
     init_gpio();
 
-    test_fm(&i2c_dev);
+    init_fm(&i2c_dev);
 
     printf("Exiting application...\n");
 
