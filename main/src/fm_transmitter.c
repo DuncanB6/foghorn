@@ -17,9 +17,69 @@ int test_fm(i2c_master_dev_handle_t* i2c_dev) {
         return false;
     }
 
+    set_property(i2c_dev, 0x0201, 32768); // crystal is 32.768
+    set_property(i2c_dev, 0x2106, 0); // 74uS pre-emph (USA std)
+    set_property(i2c_dev, 0x2204, 10); // max gain?
+    set_property(i2c_dev, 0x2200, 0x0); // turn on limiter and AGC
+
+    vTaskDelay(pdMS_TO_TICKS(250)); // let the fm oscillator spin up
+
+    set_tx_power(i2c_dev, 115, 0); // dBuV, 88-115 max, 0 -> autotuning antenna
+    tune_fm_freq(i2c_dev, FM_FREQUENCY); // tune to defined frequency
+
     return true;
 }
 
+
+int tune_fm_freq(i2c_master_dev_handle_t* i2c_dev, uint16_t freq_kHz) {
+
+    uint8_t command[4];
+    command[0] = 0x30;
+    command[1] = 0;
+    command[2] = freq_kHz >> 8;
+    command[3] = freq_kHz;
+    uint8_t reply[1];
+    if (send_i2c_command(i2c_dev, command, sizeof(command), reply, sizeof(reply)) != ESP_OK) {
+        return false;
+    }
+
+    return true;
+}
+
+
+int set_tx_power(i2c_master_dev_handle_t* i2c_dev, uint8_t power, uint8_t antcap) {
+
+    uint8_t command[5];
+    command[0] = 0x31;
+    command[1] = 0;
+    command[2] = 0;
+    command[3] = power;
+    command[4] = antcap;
+    uint8_t reply[1];
+    if (send_i2c_command(i2c_dev, command, sizeof(command), reply, sizeof(reply)) != ESP_OK) {
+        return false;
+    }
+
+    return true;
+}
+
+
+int set_property(i2c_master_dev_handle_t* i2c_dev, uint16_t property, uint16_t value) {
+
+    uint8_t command[6];
+    command[0] = 0x12;
+    command[1] = 0;
+    command[2] = property >> 8;
+    command[3] = property & 0xFF;
+    command[4] = value >> 8;
+    command[5] = value & 0xFF;
+    uint8_t reply[1];
+    if (send_i2c_command(i2c_dev, command, sizeof(command), reply, sizeof(reply)) != ESP_OK) {
+        return false;
+    }
+
+    return true;
+}
 
 int power_up(i2c_master_dev_handle_t* i2c_dev) {
 
