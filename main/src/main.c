@@ -9,9 +9,9 @@ void app_main(void) {
 
     init_i2c(&i2c_dev);
     //init_i2s(&tx_handle);
-    //init_gpio();
+    init_gpio();
 
-    //init_fm(&i2c_dev);
+    init_fm(&i2c_dev);
 
     printf("Exiting application...\n");
 
@@ -52,15 +52,15 @@ void init_i2s(i2s_chan_handle_t* tx_handle) {
 }
 
 
-void init_i2c(i2c_master_dev_handle_t* i2c_dev) {
+void init_i2c(i2c_master_dev_handle_t* dev_handle) {
 
     printf("Initializing I2C...\n");
 
     i2c_master_bus_config_t i2c_mst_config = {
         .clk_source                      = I2C_CLK_SRC_DEFAULT,
         .i2c_port                        = DEFAULT_I2C_PORT,
-        .sda_io_num                      = GPIO_NUM_1,
-        .scl_io_num                      = GPIO_NUM_0,
+        .sda_io_num                      = GPIO_NUM_21,
+        .scl_io_num                      = GPIO_NUM_22,
         .glitch_ignore_cnt               = DEFAULT_GLITCH_IGNORE_CNT,
         .flags.enable_internal_pullup    = true,
     };
@@ -72,9 +72,9 @@ void init_i2c(i2c_master_dev_handle_t* i2c_dev) {
         .device_address = SI4713_I2C_ADDR,
         .scl_speed_hz = DEFAULT_SCL_SPEED_IN_HZ,
     };
-    ESP_ERROR_CHECK(i2c_master_bus_add_device(bus_handle, &dev_cfg, i2c_dev));
+    ESP_ERROR_CHECK(i2c_master_bus_add_device(bus_handle, &dev_cfg, dev_handle));
 
-    printf("I2C initialized\n");
+    printf("Initialized I2C\n");
 
     return;
 }

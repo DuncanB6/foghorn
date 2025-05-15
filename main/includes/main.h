@@ -5,7 +5,7 @@
 #include <math.h>
 #include <string.h>
 
-#include "driver/i2c.h"
+#include "driver/i2c_master.h"
 #include "driver/gpio.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -28,7 +28,7 @@ void init_gpio(void);
 #define DEFAULT_I2C_PORT          (0)
 #define DEFAULT_I2C_INTR_PRIORITY (0)
 #define SI4713_I2C_ADDR           (0x63)            // for SI4713 FM transmitter
-#define SI4713_RESET_PIN          GPIO_NUM_5        // for SI4713 FM transmitter
+#define SI4713_RESET_PIN          GPIO_NUM_23        // for SI4713 FM transmitter
 
 
 #endif
