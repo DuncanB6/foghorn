@@ -13,8 +13,10 @@
 #include "driver/i2s_std.h"
 
 static i2c_master_dev_handle_t i2c_dev;
+static i2s_chan_handle_t tx_handle;
 
-void init_i2s(void);
+void init_i2s(i2s_chan_handle_t* tx_handle;);
+void generate_sine_wave(int32_t* buffer, int samples, float freq, int channels);
 void init_i2c(i2c_master_dev_handle_t* i2c_dev);
 void init_gpio(void);
 

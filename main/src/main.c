@@ -8,8 +8,26 @@ void app_main(void) {
     printf("Beginning application...\n");
 
     init_i2c(&i2c_dev);
+    init_i2s(&tx_handle);
     init_gpio();
-    init_i2s();
+
+    int samples_per_tone = 48000 * 0.5;
+    int buffer_size = samples_per_tone * 2 * sizeof(int32_t); // stereo, 32-bit
+    int32_t* tone1 = malloc(buffer_size);
+    int32_t* tone2 = malloc(buffer_size);
+
+    generate_sine_wave(tone1, samples_per_tone, 220, 2);
+    vTaskDelay(pdMS_TO_TICKS(10)); // give processing back to the CPU for a sec to avoid a timeout
+    generate_sine_wave(tone2, samples_per_tone, 1500, 2);
+
+    printf("generating wave...\n");
+    size_t bytes_written;
+    while (1) {
+        i2s_channel_write(tx_handle, tone1, buffer_size, &bytes_written, portMAX_DELAY);
+        printf("toggle1\n");
+        i2s_channel_write(tx_handle, tone2, buffer_size, &bytes_written, portMAX_DELAY);
+        printf("toggle2\n");
+    }
 
     init_fm(&i2c_dev);
 
@@ -28,8 +46,10 @@ void generate_sine_wave(int32_t* buffer, int samples, float freq, int channels) 
 }
 
 
-void init_i2s() {
-    i2s_chan_handle_t tx_handle;
+void init_i2s(i2s_chan_handle_t* tx_handle;) {
+
+    printf("Initializing I2S...\n");
+    
     i2s_chan_config_t chan_cfg = I2S_CHANNEL_DEFAULT_CONFIG(I2S_NUM_AUTO, I2S_ROLE_MASTER);
     i2s_new_channel(&chan_cfg, &tx_handle, NULL);
 
@@ -38,9 +58,9 @@ void init_i2s() {
         .slot_cfg = I2S_STD_MSB_SLOT_DEFAULT_CONFIG(I2S_DATA_BIT_WIDTH_32BIT, I2S_SLOT_MODE_STEREO),
         .gpio_cfg = {
             .mclk = I2S_GPIO_UNUSED,
-            .bclk = GPIO_NUM_23,
-            .ws = GPIO_NUM_13,
-            .dout = GPIO_NUM_12,
+            .bclk = GPIO_NUM_18,
+            .ws = GPIO_NUM_23,
+            .dout = GPIO_NUM_19,
             .din = I2S_GPIO_UNUSED,
             .invert_flags = {
                 .mclk_inv = false,
@@ -53,20 +73,9 @@ void init_i2s() {
     i2s_channel_init_std_mode(tx_handle, &std_cfg);
     i2s_channel_enable(tx_handle);
 
-    int samples_per_tone = 48000 * 0.5;
-    int buffer_size = samples_per_tone * 2 * sizeof(int32_t); // stereo, 32-bit
-    int32_t* tone1 = malloc(buffer_size);
-    int32_t* tone2 = malloc(buffer_size);
+    printf("I2S initialized\n");
 
-    generate_sine_wave(tone1, samples_per_tone, 440, 2);
-    generate_sine_wave(tone2, samples_per_tone, 660, 2);
-
-    printf("generating wave...\n");
-    size_t bytes_written;
-    while (1) {
-        i2s_channel_write(tx_handle, tone1, buffer_size, &bytes_written, portMAX_DELAY);
-        i2s_channel_write(tx_handle, tone2, buffer_size, &bytes_written, portMAX_DELAY);
-    }
+    return;
 }
 
 
