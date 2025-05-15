@@ -8,32 +8,23 @@ void app_main(void) {
     printf("Beginning application...\n");
 
     init_i2c(&i2c_dev);
-    init_i2s(&tx_handle);
-    init_gpio();
+    //init_i2s(&tx_handle);
+    //init_gpio();
 
-    init_fm(&i2c_dev);
+    //init_fm(&i2c_dev);
 
     printf("Exiting application...\n");
 
     return;
 }
 
-void generate_sine_wave(int32_t* buffer, int samples, float freq, int channels) {
-    for (int i = 0; i < samples; i++) {
-        int32_t sample = (int32_t)((INT32_MAX / 2) * sinf(2 * 3.14159265 * freq * i / 48000));
-        for (int ch = 0; ch < channels; ch++) {
-            buffer[i * channels + ch] = sample;
-        }
-    }
-}
 
-
-void init_i2s(i2s_chan_handle_t* tx_handle;) {
+void init_i2s(i2s_chan_handle_t* tx_handle) {
 
     printf("Initializing I2S...\n");
     
     i2s_chan_config_t chan_cfg = I2S_CHANNEL_DEFAULT_CONFIG(I2S_NUM_AUTO, I2S_ROLE_MASTER);
-    i2s_new_channel(&chan_cfg, &tx_handle, NULL);
+    i2s_new_channel(&chan_cfg, tx_handle, NULL);
 
     i2s_std_config_t std_cfg = {
         .clk_cfg = I2S_STD_CLK_DEFAULT_CONFIG(48000),
@@ -52,8 +43,8 @@ void init_i2s(i2s_chan_handle_t* tx_handle;) {
         },
     };
 
-    i2s_channel_init_std_mode(tx_handle, &std_cfg);
-    i2s_channel_enable(tx_handle);
+    i2s_channel_init_std_mode(*tx_handle, &std_cfg);
+    i2s_channel_enable(*tx_handle);
 
     printf("I2S initialized\n");
 
@@ -66,10 +57,10 @@ void init_i2c(i2c_master_dev_handle_t* i2c_dev) {
     printf("Initializing I2C...\n");
 
     i2c_master_bus_config_t i2c_mst_config = {
-        .clk_source                      = I2C_CLK_SRC_RC_FAST,
+        .clk_source                      = I2C_CLK_SRC_DEFAULT,
         .i2c_port                        = DEFAULT_I2C_PORT,
-        .sda_io_num                      = DEFAULT_I2C_SDA_PIN,
-        .scl_io_num                      = DEFAULT_I2C_SCL_PIN,
+        .sda_io_num                      = GPIO_NUM_1,
+        .scl_io_num                      = GPIO_NUM_0,
         .glitch_ignore_cnt               = DEFAULT_GLITCH_IGNORE_CNT,
         .flags.enable_internal_pullup    = true,
     };
