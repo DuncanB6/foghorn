@@ -11,24 +11,6 @@ void app_main(void) {
     init_i2s(&tx_handle);
     init_gpio();
 
-    int samples_per_tone = 48000 * 0.5;
-    int buffer_size = samples_per_tone * 2 * sizeof(int32_t); // stereo, 32-bit
-    int32_t* tone1 = malloc(buffer_size);
-    int32_t* tone2 = malloc(buffer_size);
-
-    generate_sine_wave(tone1, samples_per_tone, 220, 2);
-    vTaskDelay(pdMS_TO_TICKS(10)); // give processing back to the CPU for a sec to avoid a timeout
-    generate_sine_wave(tone2, samples_per_tone, 1500, 2);
-
-    printf("generating wave...\n");
-    size_t bytes_written;
-    while (1) {
-        i2s_channel_write(tx_handle, tone1, buffer_size, &bytes_written, portMAX_DELAY);
-        printf("toggle1\n");
-        i2s_channel_write(tx_handle, tone2, buffer_size, &bytes_written, portMAX_DELAY);
-        printf("toggle2\n");
-    }
-
     init_fm(&i2c_dev);
 
     printf("Exiting application...\n");
