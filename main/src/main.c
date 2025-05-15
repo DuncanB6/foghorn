@@ -52,7 +52,7 @@ void init_i2s(i2s_chan_handle_t* tx_handle) {
 }
 
 
-void init_i2c(i2c_master_dev_handle_t* dev_handle) {
+void init_i2c(i2c_master_dev_handle_t* i2c_dev) {
 
     printf("Initializing I2C...\n");
 
@@ -72,7 +72,7 @@ void init_i2c(i2c_master_dev_handle_t* dev_handle) {
         .device_address = SI4713_I2C_ADDR,
         .scl_speed_hz = DEFAULT_SCL_SPEED_IN_HZ,
     };
-    ESP_ERROR_CHECK(i2c_master_bus_add_device(bus_handle, &dev_cfg, dev_handle));
+    ESP_ERROR_CHECK(i2c_master_bus_add_device(bus_handle, &dev_cfg, i2c_dev));
 
     printf("Initialized I2C\n");
 
