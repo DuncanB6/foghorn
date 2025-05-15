@@ -2,15 +2,19 @@
 #define _MAIN_H
 
 #include <stdio.h>
+#include <math.h>
+#include <string.h>
 
 #include "driver/i2c_master.h"
 #include "driver/gpio.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_log.h"
+#include "driver/i2s_std.h"
 
 static i2c_master_dev_handle_t i2c_dev;
 
+void init_i2s(void);
 void init_i2c(i2c_master_dev_handle_t* i2c_dev);
 void init_gpio(void);
 
