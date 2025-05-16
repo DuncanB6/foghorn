@@ -1,6 +1,10 @@
 
 #include "main.h"
 #include "fm_transmitter.h"
+#include "microphone.h"
+
+
+QueueHandle_t data_queue;
 
 
 void app_main(void) {
@@ -11,12 +15,23 @@ void app_main(void) {
     init_i2s(&tx_handle);
     init_gpio();
 
-    init_fm(&i2c_dev);
+    data_queue   = xQueueCreate(DATA_QUEUE_DEPTH, sizeof(int));
+
+    //init_fm(&i2c_dev);
+
+    xTaskCreate(microphone, "microphone", 4096, NULL, 5, NULL);
+
+    while(1)
+    {
+        vTaskDelay(pdMS_TO_TICKS(1000)); 
+    }  
 
     printf("Exiting application...\n");
 
     return;
 }
+
+
 
 
 void init_i2s(i2s_chan_handle_t* tx_handle) {
@@ -87,7 +102,7 @@ void init_gpio(void) {
     printf("Initializing GPIO...\n");
 
     uint64_t pin_bitMask = 0;
-    pin_bitMask |= (1ULL << SI4713_RESET_PIN);
+    pin_bitMask |= (1ULL << SI4713_RESET_PIN); // reset for FM transmitter
 
     gpio_config_t io_conf = {
         .pin_bit_mask = pin_bitMask, 
@@ -97,6 +112,10 @@ void init_gpio(void) {
         .intr_type = GPIO_INTR_DISABLE         
     };
     gpio_config(&io_conf);
+
+    // ADC for microphone
+    adc1_config_width(ADC_WIDTH_BIT_12);
+    adc1_config_channel_atten(ADC1_CHANNEL_0, ADC_ATTEN_DB_11);
 
     printf("GPIO initialized\n");
 
