@@ -8,7 +8,7 @@ void app_main(void) {
     printf("Beginning application...\n");
 
     init_i2c(&i2c_dev);
-    //init_i2s(&tx_handle);
+    init_i2s(&tx_handle);
     init_gpio();
 
     init_fm(&i2c_dev);
@@ -31,9 +31,9 @@ void init_i2s(i2s_chan_handle_t* tx_handle) {
         .slot_cfg = I2S_STD_MSB_SLOT_DEFAULT_CONFIG(I2S_DATA_BIT_WIDTH_32BIT, I2S_SLOT_MODE_STEREO),
         .gpio_cfg = {
             .mclk = I2S_GPIO_UNUSED,
-            .bclk = GPIO_NUM_18,
-            .ws = GPIO_NUM_23,
-            .dout = GPIO_NUM_19,
+            .bclk = GPIO_NUM_4,
+            .ws = GPIO_NUM_5,
+            .dout = GPIO_NUM_18,
             .din = I2S_GPIO_UNUSED,
             .invert_flags = {
                 .mclk_inv = false,
@@ -45,6 +45,8 @@ void init_i2s(i2s_chan_handle_t* tx_handle) {
 
     i2s_channel_init_std_mode(*tx_handle, &std_cfg);
     i2s_channel_enable(*tx_handle);
+    i2s_channel_disable(*tx_handle);
+    i2s_del_channel(*tx_handle);
 
     printf("I2S initialized\n");
 
