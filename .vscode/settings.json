@@ -13,6 +13,7 @@
     "idf.flashType": "UART",
     "files.associations": {
         "i2c_master.h": "c",
-        "cstdint": "c"
+        "cstdint": "c",
+        "task.h": "c"
     }
 }

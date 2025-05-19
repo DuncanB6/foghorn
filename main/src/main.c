@@ -11,15 +11,16 @@ void app_main(void) {
 
     printf("Beginning application...\n");
 
+    data_queue   = xQueueCreate(DATA_QUEUE_DEPTH, sizeof(int));
+
     init_i2c(&i2c_dev);
     init_i2s(&tx_handle);
     init_gpio();
-
-    data_queue   = xQueueCreate(DATA_QUEUE_DEPTH, sizeof(int));
+    init_acquisition_timer();
 
     //init_fm(&i2c_dev);
 
-    xTaskCreate(microphone, "microphone", 4096, NULL, 5, NULL);
+    //xTaskCreate(microphone, "microphone", 4096, NULL, 5, NULL);
 
     while(1)
     {
@@ -32,6 +33,41 @@ void app_main(void) {
 }
 
 
+void init_acquisition_timer(void) {
+
+    printf("Initializing DAQ timer...\n");
+
+    const esp_timer_create_args_t timer_args = 
+    {
+        .callback = &acquire_sample, 
+        .name = "adc_timer"
+    };
+    
+    esp_timer_create(&timer_args, &adc_timer);
+    esp_timer_start_periodic(adc_timer, ADC_SAMPLING_PERIOD_IN_US);  
+
+    printf("DAQ timer initialized\n");
+
+    return;
+}
+
+
+void IRAM_ATTR acquire_sample(void *arg) {
+    
+    int adc_reading = adc1_get_raw(ADC1_CHANNEL_0); // get adc reading from mic pin
+    
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE; 
+    if (xQueueSendFromISR(data_queue, (int*)&adc_reading, &xHigherPriorityTaskWoken) != pdPASS) {
+        printf("Queue is full, packet dropped.\n");
+    }
+    if (xHigherPriorityTaskWoken == pdTRUE) {
+        portYIELD_FROM_ISR();
+    }
+
+    printf("%d\n", adc_reading);
+
+    return;
+}
 
 
 void init_i2s(i2s_chan_handle_t* tx_handle) {

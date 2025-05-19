@@ -13,15 +13,19 @@
 #include "esp_log.h"
 #include "driver/i2s_std.h"
 #include "driver/adc.h"
+#include "esp_timer.h"
 
 extern QueueHandle_t data_queue;
 
 static i2c_master_dev_handle_t i2c_dev;
 static i2s_chan_handle_t tx_handle;
+static esp_timer_handle_t adc_timer;
 
 void init_i2s(i2s_chan_handle_t* tx_handle);
 void init_i2c(i2c_master_dev_handle_t* i2c_dev);
 void init_gpio(void);
+void init_acquisition_timer(void);
+void IRAM_ATTR acquire_sample(void *arg);
 
 #define DEBUG                     true
 
@@ -32,12 +36,13 @@ void init_gpio(void);
 #define DEFAULT_I2C_PORT          (0)
 #define DEFAULT_I2C_INTR_PRIORITY (0)
 #define SI4713_I2C_ADDR           (0x63)            // for SI4713 FM transmitter
-#define SI4713_RESET_PIN          GPIO_NUM_23        // for SI4713 FM transmitter
+#define SI4713_RESET_PIN          GPIO_NUM_23       // for SI4713 FM transmitter
 
 // I2S specific
 #define I2S_BUFFER_SIZE           (128)
 
 #define DATA_QUEUE_DEPTH          (512)
+#define ADC_SAMPLING_PERIOD_IN_US (22.6757)
 
 
 #endif
