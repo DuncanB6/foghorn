@@ -6,6 +6,10 @@
 
 QueueHandle_t data_queue;
 
+i2c_master_dev_handle_t i2c_dev;
+i2s_chan_handle_t tx_handle;
+esp_timer_handle_t adc_timer;
+
 
 void app_main(void) {
 
@@ -18,9 +22,16 @@ void app_main(void) {
     init_gpio();
     init_acquisition_timer();
 
+    vTaskDelay(pdMS_TO_TICKS(100));
+
+    if (tx_handle == NULL) {
+        printf("I2S TX handle is null, exiting task\n");
+        return;
+    }
+
     //init_fm(&i2c_dev);
 
-    //xTaskCreate(microphone, "microphone", 4096, NULL, 5, NULL);
+    xTaskCreate(i2s_send, "i2s_send", 4096, NULL, 5, NULL);
 
     while(1)
     {
@@ -64,8 +75,6 @@ void IRAM_ATTR acquire_sample(void *arg) {
         portYIELD_FROM_ISR();
     }
 
-    printf("%d\n", adc_reading);
-
     return;
 }
 
@@ -78,7 +87,7 @@ void init_i2s(i2s_chan_handle_t* tx_handle) {
     i2s_new_channel(&chan_cfg, tx_handle, NULL);
 
     i2s_std_config_t std_cfg = {
-        .clk_cfg = I2S_STD_CLK_DEFAULT_CONFIG(48000),
+        .clk_cfg = I2S_STD_CLK_DEFAULT_CONFIG(I2S_FREQUENCY),
         .slot_cfg = I2S_STD_MSB_SLOT_DEFAULT_CONFIG(I2S_DATA_BIT_WIDTH_32BIT, I2S_SLOT_MODE_STEREO),
         .gpio_cfg = {
             .mclk = I2S_GPIO_UNUSED,
@@ -95,9 +104,6 @@ void init_i2s(i2s_chan_handle_t* tx_handle) {
     };
 
     i2s_channel_init_std_mode(*tx_handle, &std_cfg);
-    i2s_channel_enable(*tx_handle);
-    i2s_channel_disable(*tx_handle);
-    i2s_del_channel(*tx_handle);
 
     printf("I2S initialized\n");
 

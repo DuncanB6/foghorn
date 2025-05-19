@@ -17,9 +17,9 @@
 
 extern QueueHandle_t data_queue;
 
-static i2c_master_dev_handle_t i2c_dev;
-static i2s_chan_handle_t tx_handle;
-static esp_timer_handle_t adc_timer;
+extern i2c_master_dev_handle_t i2c_dev;
+extern i2s_chan_handle_t tx_handle;
+extern esp_timer_handle_t adc_timer;
 
 void init_i2s(i2s_chan_handle_t* tx_handle);
 void init_i2c(i2c_master_dev_handle_t* i2c_dev);
@@ -42,7 +42,9 @@ void IRAM_ATTR acquire_sample(void *arg);
 #define I2S_BUFFER_SIZE           (128)
 
 #define DATA_QUEUE_DEPTH          (512)
-#define ADC_SAMPLING_PERIOD_IN_US (22.6757)
+#define I2S_FREQUENCY             (44100)
+//#define ADC_SAMPLING_PERIOD_IN_US (1000000 / I2S FREQUENCY)
+#define ADC_SAMPLING_PERIOD_IN_US (50000)
 
 
 #endif
