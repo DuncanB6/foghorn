@@ -2,7 +2,6 @@
 #include "fm_transmitter.h"
 
 
-
 int init_fm(i2c_master_dev_handle_t* i2c_dev) {
 
     // Reset the FM board

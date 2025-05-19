@@ -1,6 +1,6 @@
-#include "microphone.h"
+#include "i2s_send.h"
 
-void microphone(void) {
+void i2s_send(void) {
 
     while (1) {
         int adc_reading = adc1_get_raw(ADC1_CHANNEL_0);  // Read raw ADC value
