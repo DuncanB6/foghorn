@@ -24,11 +24,6 @@ void app_main(void) {
 
     vTaskDelay(pdMS_TO_TICKS(100));
 
-    if (tx_handle == NULL) {
-        printf("I2S TX handle is null, exiting task\n");
-        return;
-    }
-
     //init_fm(&i2c_dev);
 
     xTaskCreate(i2s_send, "i2s_send", 4096, NULL, 5, NULL);
@@ -69,7 +64,7 @@ void IRAM_ATTR acquire_sample(void *arg) {
     
     BaseType_t xHigherPriorityTaskWoken = pdFALSE; 
     if (xQueueSendFromISR(data_queue, (int*)&adc_reading, &xHigherPriorityTaskWoken) != pdPASS) {
-        printf("Queue is full, packet dropped.\n");
+        //printf("Queue is full, packet dropped\n");
     }
     if (xHigherPriorityTaskWoken == pdTRUE) {
         portYIELD_FROM_ISR();

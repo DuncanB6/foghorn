@@ -43,8 +43,6 @@ void IRAM_ATTR acquire_sample(void *arg);
 
 #define DATA_QUEUE_DEPTH          (512)
 #define I2S_FREQUENCY             (44100)
-//#define ADC_SAMPLING_PERIOD_IN_US (1000000 / I2S FREQUENCY)
-#define ADC_SAMPLING_PERIOD_IN_US (50000)
-
+#define ADC_SAMPLING_PERIOD_IN_US (1000000 / I2S_FREQUENCY)
 
 #endif
