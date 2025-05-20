@@ -11,21 +11,13 @@
 #include "freertos/task.h"
 #include "freertos/queue.h"
 #include "esp_log.h"
-#include "driver/i2s_std.h"
-#include "driver/adc.h"
-#include "esp_timer.h"
 
 extern QueueHandle_t data_queue;
 
 extern i2c_master_dev_handle_t i2c_dev;
-extern i2s_chan_handle_t tx_handle;
-extern esp_timer_handle_t adc_timer;
 
-void init_i2s(i2s_chan_handle_t* tx_handle);
 void init_i2c(i2c_master_dev_handle_t* i2c_dev);
 void init_gpio(void);
-void init_acquisition_timer(void);
-void IRAM_ATTR acquire_sample(void *arg);
 
 #define DEBUG                     true
 
