@@ -20,13 +20,13 @@ void app_main(void) {
     init_i2c(&i2c_dev);
     init_i2s(&tx_handle);
     init_gpio();
-    init_acquisition_timer();
+    //init_acquisition_timer();
 
     vTaskDelay(pdMS_TO_TICKS(100));
 
-    //init_fm(&i2c_dev);
+    init_fm(&i2c_dev);
 
-    xTaskCreate(i2s_send, "i2s_send", 4096, NULL, 5, NULL);
+    //xTaskCreate(i2s_send, "i2s_send", 4096, NULL, 5, NULL);
 
     while(1)
     {
@@ -62,13 +62,16 @@ void IRAM_ATTR acquire_sample(void *arg) {
     
     int adc_reading = adc1_get_raw(ADC1_CHANNEL_0); // get adc reading from mic pin
     
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE; 
-    if (xQueueSendFromISR(data_queue, (int*)&adc_reading, &xHigherPriorityTaskWoken) != pdPASS) {
-        //printf("Queue is full, packet dropped\n");
-    }
-    if (xHigherPriorityTaskWoken == pdTRUE) {
-        portYIELD_FROM_ISR();
-    }
+    // BaseType_t xHigherPriorityTaskWoken = pdFALSE; 
+    // if (xQueueSendFromISR(data_queue, (int*)&adc_reading, &xHigherPriorityTaskWoken) != pdPASS) {
+    //     //printf("Queue is full, packet dropped\n");
+    // }
+    // if (xHigherPriorityTaskWoken == pdTRUE) {
+    //     portYIELD_FROM_ISR();
+    // }
+
+    // UBaseType_t queue_length = uxQueueMessagesWaiting(data_queue);
+    // printf("%u\n", queue_length);
 
     return;
 }

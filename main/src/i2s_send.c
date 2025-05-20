@@ -46,8 +46,10 @@ void i2s_send(void) {
                 printf("I2S write failed, %d bytes written\n", bytes_written);
             }
         }
-
-        vTaskDelay(pdMS_TO_TICKS(10)); // give the CPU back for a sec
+        else {
+            vTaskDelay(pdMS_TO_TICKS(10)); // give the CPU back for a sec
+            //taskYIELD();
+        }
     }
 
     i2s_channel_disable(tx_handle);
