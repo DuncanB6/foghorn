@@ -28,12 +28,12 @@ void init_gpio(void);
 #define DEFAULT_I2C_PORT          (0)
 #define DEFAULT_I2C_INTR_PRIORITY (0)
 #define SI4713_I2C_ADDR           (0x63)            // for SI4713 FM transmitter
-#define SI4713_RESET_PIN          GPIO_NUM_23       // for SI4713 FM transmitter
 
-// I2S specific
-#define I2S_BUFFER_SIZE           (128)
-#define DATA_QUEUE_DEPTH          (512)
-#define I2S_FREQUENCY             (16000)
-#define ADC_SAMPLING_PERIOD_IN_US (1000000 / I2S_FREQUENCY)
+#define SI4713_RESET_PIN          GPIO_NUM_23       // for SI4713 FM transmitter
+#define TUNE_UP_PIN               GPIO_NUM_32
+#define TUNE_DOWN_PIN             GPIO_NUM_33
+
+extern int fm_frequency;
+
 
 #endif

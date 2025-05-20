@@ -12,18 +12,27 @@ void app_main(void) {
 
     printf("Beginning application...\n");
 
-    data_queue   = xQueueCreate(DATA_QUEUE_DEPTH, sizeof(int));
-
     init_i2c(&i2c_dev);
     init_gpio();
 
     vTaskDelay(pdMS_TO_TICKS(100));
 
-    //init_fm(&i2c_dev);
+    init_fm(&i2c_dev);
 
     while(1)
     {
-        vTaskDelay(pdMS_TO_TICKS(1000)); 
+        if (gpio_get_level(TUNE_UP_PIN)) {
+            fm_frequency += 20;
+            tune_fm_freq(&i2c_dev, fm_frequency);
+            while (gpio_get_level(TUNE_UP_PIN)); // wait for button release
+        }
+        if (gpio_get_level(TUNE_DOWN_PIN)) {
+            fm_frequency -= 20;
+            tune_fm_freq(&i2c_dev, fm_frequency);
+            while (gpio_get_level(TUNE_DOWN_PIN)); // wait for button release
+            
+        }
+        vTaskDelay(pdMS_TO_TICKS(10)); 
     }  
 
     printf("Exiting application...\n");
@@ -75,6 +84,18 @@ void init_gpio(void) {
         .intr_type = GPIO_INTR_DISABLE         
     };
     gpio_config(&io_conf);
+
+    // Configure GPIO32 and GPIO33 as inputs
+    uint64_t input_pin_mask = (1ULL << TUNE_UP_PIN) | (1ULL << TUNE_DOWN_PIN);
+
+    gpio_config_t io_conf_input = {
+        .pin_bit_mask = input_pin_mask,
+        .mode = GPIO_MODE_INPUT,
+        .pull_up_en = GPIO_PULLUP_DISABLE,
+        .pull_down_en = GPIO_PULLDOWN_DISABLE,
+        .intr_type = GPIO_INTR_DISABLE
+    };
+    gpio_config(&io_conf_input);
 
     printf("GPIO initialized\n");
 

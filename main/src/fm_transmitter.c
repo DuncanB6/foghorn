@@ -2,6 +2,9 @@
 #include "fm_transmitter.h"
 
 
+int fm_frequency = 9990;
+
+
 int init_fm(i2c_master_dev_handle_t* i2c_dev) {
 
     // Reset the FM board
@@ -26,7 +29,7 @@ int init_fm(i2c_master_dev_handle_t* i2c_dev) {
     vTaskDelay(pdMS_TO_TICKS(250)); // let the fm oscillator spin up
 
     set_tx_power(i2c_dev, 115, 0); // dBuV, 88-115 max, 0 -> autotuning antenna
-    tune_fm_freq(i2c_dev, FM_FREQUENCY); // tune to defined frequency
+    tune_fm_freq(i2c_dev, fm_frequency); // tune to defined frequency
 
     return true;
 }
