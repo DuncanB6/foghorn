@@ -29,19 +29,31 @@ void app_main(void) {
     {
         if (gpio_get_level(TUNE_UP_PIN)) {
             fm_frequency += 20;
+            if (fm_frequency > 10810) {
+                fm_frequency = 8750;
+            }
+
             tune_fm_freq(&i2c_dev, fm_frequency);
             display_freq();
+            
+            // wait for button release
             while (gpio_get_level(TUNE_UP_PIN)) {
                 vTaskDelay(pdMS_TO_TICKS(10)); 
-            } // wait for button release
+            }
         }
         if (gpio_get_level(TUNE_DOWN_PIN)) {
             fm_frequency -= 20;
+            if (fm_frequency < 8750) {
+                fm_frequency = 10810;
+            }
+
             tune_fm_freq(&i2c_dev, fm_frequency);
             display_freq();
+
+            // wait for button release
             while (gpio_get_level(TUNE_DOWN_PIN)) {
                 vTaskDelay(pdMS_TO_TICKS(10)); 
-            } // wait for button release
+            }
         }
         vTaskDelay(pdMS_TO_TICKS(10)); 
     }  
