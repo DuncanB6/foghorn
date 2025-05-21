@@ -32,14 +32,18 @@ void app_main(void) {
             tune_fm_freq(&i2c_dev, fm_frequency);
             display_freq();
             printf("going up\n");
-            while (gpio_get_level(TUNE_UP_PIN)); // wait for button release
+            while (gpio_get_level(TUNE_UP_PIN)) {
+                vTaskDelay(pdMS_TO_TICKS(10)); 
+            } // wait for button release
         }
         if (gpio_get_level(TUNE_DOWN_PIN)) {
             fm_frequency -= 20;
             tune_fm_freq(&i2c_dev, fm_frequency);
             display_freq();
             printf("going down\n");
-            while (gpio_get_level(TUNE_DOWN_PIN)); // wait for button release
+            while (gpio_get_level(TUNE_DOWN_PIN)) {
+                vTaskDelay(pdMS_TO_TICKS(10)); 
+            } // wait for button release
         }
         vTaskDelay(pdMS_TO_TICKS(10)); 
     }  
@@ -101,7 +105,7 @@ void init_gpio(void) {
         .pin_bit_mask = input_pin_mask,
         .mode = GPIO_MODE_INPUT,
         .pull_up_en = GPIO_PULLUP_DISABLE,
-        .pull_down_en = GPIO_PULLDOWN_DISABLE,
+        .pull_down_en = GPIO_PULLDOWN_ENABLE,
         .intr_type = GPIO_INTR_DISABLE
     };
     gpio_config(&io_conf_input);
