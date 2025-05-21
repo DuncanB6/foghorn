@@ -36,10 +36,7 @@ void app_main(void) {
             tune_fm_freq(&i2c_dev, fm_frequency);
             display_freq();
             
-            // wait for button release
-            while (gpio_get_level(TUNE_UP_PIN)) {
-                vTaskDelay(pdMS_TO_TICKS(10)); 
-            }
+            vTaskDelay(pdMS_TO_TICKS(100)); 
         }
         if (gpio_get_level(TUNE_DOWN_PIN)) {
             fm_frequency -= 20;
@@ -50,10 +47,7 @@ void app_main(void) {
             tune_fm_freq(&i2c_dev, fm_frequency);
             display_freq();
 
-            // wait for button release
-            while (gpio_get_level(TUNE_DOWN_PIN)) {
-                vTaskDelay(pdMS_TO_TICKS(10)); 
-            }
+            vTaskDelay(pdMS_TO_TICKS(100)); 
         }
         vTaskDelay(pdMS_TO_TICKS(10)); 
     }  
