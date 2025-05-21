@@ -11,6 +11,8 @@
 #include "freertos/task.h"
 #include "freertos/queue.h"
 #include "esp_log.h"
+#include "ssd1306.h"
+#include "font8x8_basic.h"
 
 extern QueueHandle_t data_queue;
 

@@ -14,6 +14,7 @@
     "files.associations": {
         "i2c_master.h": "c",
         "cstdint": "c",
-        "task.h": "c"
+        "task.h": "c",
+        "i2c.h": "c"
     }
 }
