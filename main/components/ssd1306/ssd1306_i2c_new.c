@@ -14,7 +14,7 @@
 #define I2C_MASTER_FREQ_HZ 400000 // I2C clock of SSD1306 can run at 400 kHz max.
 #define I2C_TICKS_TO_WAIT 100	  // Maximum ticks to wait before issuing a timeout.
 
-void i2c_master_init(SSD1306_t * dev, int16_t sda, int16_t scl, int16_t reset)
+void init_i2c_1(SSD1306_t * dev, int16_t sda, int16_t scl, int16_t reset)
 {
 	ESP_LOGI(TAG, "New i2c driver is used");
 	i2c_master_bus_config_t i2c_mst_config = {

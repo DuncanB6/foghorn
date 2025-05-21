@@ -153,7 +153,7 @@ void ssd1306_display_rotate_text(SSD1306_t * dev, int seg, const char * text, in
 void ssd1306_dump(SSD1306_t dev);
 void ssd1306_dump_page(SSD1306_t * dev, int page, int seg);
 
-void i2c_master_init(SSD1306_t * dev, int16_t sda, int16_t scl, int16_t reset);
+void init_i2c_1(SSD1306_t * dev, int16_t sda, int16_t scl, int16_t reset);
 void i2c_device_add(SSD1306_t * dev, i2c_port_t i2c_num, int16_t reset, uint16_t i2c_address);
 void i2c_init(SSD1306_t * dev, int width, int height);
 void i2c_display_image(SSD1306_t * dev, int page, int seg, const uint8_t * images, int width);

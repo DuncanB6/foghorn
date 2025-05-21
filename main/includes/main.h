@@ -17,8 +17,9 @@
 extern QueueHandle_t data_queue;
 
 extern i2c_master_dev_handle_t i2c_dev;
+extern SSD1306_t lcd_dev;
 
-void init_i2c(i2c_master_dev_handle_t* i2c_dev);
+void init_i2c_0(i2c_master_dev_handle_t* i2c_dev);
 void init_gpio(void);
 
 

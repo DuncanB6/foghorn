@@ -15,6 +15,7 @@
         "i2c_master.h": "c",
         "cstdint": "c",
         "task.h": "c",
-        "i2c.h": "c"
+        "i2c.h": "c",
+        "lcd_screen.h": "c"
     }
 }
