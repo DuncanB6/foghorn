@@ -17,7 +17,7 @@ void app_main(void) {
 
     vTaskDelay(pdMS_TO_TICKS(100));
 
-    init_fm(&i2c_dev);
+    //init_fm(&i2c_dev);
 
     SSD1306_t dev;
 	int center, top, bottom;

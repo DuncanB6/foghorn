@@ -21,7 +21,6 @@ extern i2c_master_dev_handle_t i2c_dev;
 void init_i2c(i2c_master_dev_handle_t* i2c_dev);
 void init_gpio(void);
 
-#define DEBUG                     true
 
 // I2C specific
 #define DEFAULT_SCL_SPEED_IN_HZ   (400000)          // 500KHz
