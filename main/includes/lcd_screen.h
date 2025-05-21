@@ -4,5 +4,6 @@
 #include "main.h"
 
 void lcd_demo(void);
+void display_freq(void);
 
 #endif

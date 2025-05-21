@@ -124,4 +124,22 @@ void lcd_demo(void) {
     return;
 }
 
+void display_freq(void) {
+    char freq_str[20];
+
+    // Format the frequency to a string, e.g., "101.5 MHz"
+    double freq_MHz = fm_frequency / 100.0;
+    snprintf(freq_str, sizeof(freq_str), "%0.1f", freq_MHz);
+
+    // Clear screen before displaying
+    ssd1306_clear_screen(&lcd_dev, false);
+    ssd1306_contrast(&lcd_dev, 0xff);
+
+    // Display the frequency in large text on the center line (line 3 is center in demo)
+    ssd1306_display_text_x3(&lcd_dev, 1, freq_str, strlen(freq_str), false);
+    ssd1306_display_text_x3(&lcd_dev, 5, "MHz", strlen("MHz"), false);
+
+    return;
+}
+
 

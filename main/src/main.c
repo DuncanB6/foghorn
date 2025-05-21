@@ -21,22 +21,25 @@ void app_main(void) {
 
     vTaskDelay(pdMS_TO_TICKS(100));
 
-    //init_fm(&i2c_dev);
+    init_fm(&i2c_dev);
 
-    lcd_demo();
+    display_freq();
 
     while(1)
     {
         if (gpio_get_level(TUNE_UP_PIN)) {
             fm_frequency += 20;
             tune_fm_freq(&i2c_dev, fm_frequency);
+            display_freq();
+            printf("going up\n");
             while (gpio_get_level(TUNE_UP_PIN)); // wait for button release
         }
         if (gpio_get_level(TUNE_DOWN_PIN)) {
             fm_frequency -= 20;
             tune_fm_freq(&i2c_dev, fm_frequency);
+            display_freq();
+            printf("going down\n");
             while (gpio_get_level(TUNE_DOWN_PIN)); // wait for button release
-            
         }
         vTaskDelay(pdMS_TO_TICKS(10)); 
     }  
