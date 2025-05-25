@@ -16,6 +16,9 @@
 
 void init_i2c_1(SSD1306_t * dev, int16_t sda, int16_t scl, int16_t reset)
 {
+
+	printf("Initializing LCD I2C...\n");
+
 	ESP_LOGI(TAG, "New i2c driver is used");
 	i2c_master_bus_config_t i2c_mst_config = {
 		.clk_source = I2C_CLK_SRC_DEFAULT,
@@ -43,6 +46,8 @@ void init_i2c_1(SSD1306_t * dev, int16_t sda, int16_t scl, int16_t reset)
 		gpio_set_level(reset, 0);
 		vTaskDelay(50 / portTICK_PERIOD_MS);
 		gpio_set_level(reset, 1);
+
+	printf("Initialized LCD I2C\n");
 	}
 
 	dev->_address = I2C_ADDRESS;

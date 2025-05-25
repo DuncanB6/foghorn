@@ -60,7 +60,7 @@ void app_main(void) {
 
 void init_i2c_0(i2c_master_dev_handle_t* i2c_dev) {
 
-    printf("Initializing I2C...\n");
+    printf("Initializing FM I2C...\n");
 
     i2c_master_bus_config_t i2c_mst_config = {
         .clk_source                      = I2C_CLK_SRC_DEFAULT,
@@ -80,7 +80,7 @@ void init_i2c_0(i2c_master_dev_handle_t* i2c_dev) {
     };
     ESP_ERROR_CHECK(i2c_master_bus_add_device(bus_handle, &dev_cfg, i2c_dev));
 
-    printf("Initialized I2C\n");
+    printf("Initialized FM I2C\n");
 
     return;
 }
@@ -114,7 +114,7 @@ void init_gpio(void) {
     };
     gpio_config(&io_conf_input);
 
-    printf("GPIO initialized\n");
+    printf("Initialized GPIO\n");
 
     return;
 }
