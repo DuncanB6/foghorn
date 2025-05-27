@@ -15,7 +15,7 @@ void app_main(void) {
     printf("Beginning application...\n");
 
     init_i2c_0(&i2c_dev);
-    init_i2c_1(&lcd_dev, GPIO_NUM_25, GPIO_NUM_26, GPIO_NUM_0);
+    init_i2c_1(&lcd_dev, GPIO_NUM_26, GPIO_NUM_25, GPIO_NUM_0);
     init_gpio();
     ssd1306_init(&lcd_dev, 128, 64);
 
